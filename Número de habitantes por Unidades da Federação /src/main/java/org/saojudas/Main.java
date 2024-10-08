@@ -26,8 +26,13 @@ public class Main {
 
     public static void main(String[] args) throws FileNotFoundException, IOException, ClassNotFoundException, SQLException {
 
-        FileInputStream instream = new FileInputStream("/Users/mitz/Downloads/Aulas Material Oct 6/EstimativaPopulacao.csv");
-        FileWriter fileWriter = new FileWriter(new File("/Users/mitz/Downloads/Aulas Material Oct 6/EstimativaPopulacao_02.csv"));
+        String path1 = "/Users/mitz/Downloads/Aulas Material Oct 6/EstimativaPopulacao.csv";
+        String path2 = "/Users/mitz/Downloads/Aulas Material Oct 6/EstimativaPopulacao_02.csv";
+        String path3 = "/Users/mitz/Downloads/Aulas Material Oct 6/EstimativaPopulacao_03.csv";
+        String path4 = "/Users/mitz/Downloads/Aulas Material Oct 6/EstimativaPopulacao_04.csv";
+        
+        FileInputStream instream = new FileInputStream(path1);
+        FileWriter fileWriter = new FileWriter(new File(path2));
 
         InputStreamReader reader = new InputStreamReader(instream);
         BufferedReader br = new BufferedReader(reader);
@@ -112,7 +117,7 @@ public class Main {
         String str2;
         ArrayList<String> nomes2 = new ArrayList<String>();
 
-        BufferedReader in2 = new BufferedReader(new FileReader("/Users/mitz/Downloads/Aulas Material Oct 6/EstimativaPopulacao_02.csv"));
+        BufferedReader in2 = new BufferedReader(new FileReader(path2));
 
         while ((str2 = in2.readLine()) != null) {
             nomes2.add(str2);
@@ -121,7 +126,7 @@ public class Main {
 
         Collections.sort(nomes2);
 
-        BufferedWriter out2 = new BufferedWriter(new FileWriter("/Users/mitz/Downloads/Aulas Material Oct 6/EstimativaPopulacao_03.csv"));
+        BufferedWriter out2 = new BufferedWriter(new FileWriter(path3));
         for (int i = 0; i < nomes2.size(); i++) {
             out2.write(nomes2.get(i));
             Gravados2 = Gravados2 + 1;
@@ -141,8 +146,8 @@ public class Main {
                     Tratamento do arquivo de saida:
     --------------------------------------------------------------------------
     */
-        FileInputStream instream3 = new FileInputStream("/Users/mitz/Downloads/Aulas Material Oct 6/EstimativaPopulacao_03.csv");
-        FileWriter fileWriter3 = new FileWriter(new File("/Users/mitz/Downloads/Aulas Material Oct 6/EstimativaPopulacao_04.csv"));
+        FileInputStream instream3 = new FileInputStream(path3);
+        FileWriter fileWriter3 = new FileWriter(new File(path4));
 
         InputStreamReader reader3 = new InputStreamReader(instream3);
         BufferedReader br3 = new BufferedReader(reader3);
