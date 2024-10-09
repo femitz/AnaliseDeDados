@@ -1,8 +1,19 @@
-import java.io.*;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.sql.SQLException;
 import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.sql.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Main {
 
@@ -11,6 +22,31 @@ public class Main {
         String normalized = Normalizer.normalize(str, Normalizer.Form.NFD);
         // Remove os caracteres não ASCII (como acentos)
         return normalized.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
+    }
+
+    // Função para ler um arquivo CSV e atualizar o mapa com os valores somados
+    public static void lerCsvEAtualizarMapa(String filePath, Map<String, Integer> ufMatriculados) throws IOException {
+        BufferedReader br = new BufferedReader(new FileReader(filePath));
+        String linha;
+        br.readLine(); // Pula o cabeçalho
+
+        // Leitura do arquivo CSV linha por linha
+        while ((linha = br.readLine()) != null) {
+            String[] campos = linha.split(";");
+            String uf = campos[0].trim();
+            int matriculados;
+
+            try {
+                matriculados = Integer.parseInt(campos[1].trim());
+            } catch (NumberFormatException e) {
+                System.out.println("Erro ao converter número: " + campos[1]);
+                continue;
+            }
+
+            // Atualiza o mapa com a soma dos valores
+            ufMatriculados.put(uf, ufMatriculados.getOrDefault(uf, 0) + matriculados);
+        }
+        br.close();
     }
 
     /*
@@ -22,18 +58,27 @@ public class Main {
      * Tratamento do arquivo de saida:
      * --------------------------------------------------------------------------
      */
-
     public static void main(String[] args)
             throws FileNotFoundException, IOException, ClassNotFoundException, SQLException {
-        
-        // Por ter dois arquivos para serem lidos Matriculados_1 por UF.csv e Matriculados_2 por UF.csv o for serve para apenas mudar o numero e o 
-        // "main" ser percorrido duas vezes, assim fazendo o processo igual para os dois arquivos
+
+        // Por ter dois arquivos para serem lidos Matriculados_1 por UF.csv e
+        // Matriculados_2 por UF.csv o for serve para apenas mudar o numero e o
+        // "main" ser percorrido duas vezes, assim fazendo o processo igual para os dois
+        // arquivos
         for (int matriculadosParte = 1; matriculadosParte < 3; matriculadosParte++) {
-    
-            String path1 = "/Users/mitz/Documents/Development/AnaliseDeDados/Número de alunos matriculados por Unidades da Federação (UF)/Matriculados_" + String.valueOf(matriculadosParte) + " por UF.csv";
-            String path2 = "/Users/mitz/Documents/Development/AnaliseDeDados/Número de alunos matriculados por Unidades da Federação (UF)/Matriculados_" + String.valueOf(matriculadosParte) + " por UF_2.csv";
-            String path3 = "/Users/mitz/Documents/Development/AnaliseDeDados/Número de alunos matriculados por Unidades da Federação (UF)/Matriculados_" + String.valueOf(matriculadosParte) + " por UF_3.csv";
-            String path4 = "/Users/mitz/Documents/Development/AnaliseDeDados/Número de alunos matriculados por Unidades da Federação (UF)/Matriculados_" + String.valueOf(matriculadosParte) + " por UF_4.csv";
+
+            System.out.println("\nLimpeza de dados para o arquivo: Matriculados_" + String.valueOf(matriculadosParte)
+                    + " por UF.csv");
+
+            // *----------------- Definição dos paths ------------
+            String path1 = "/Users/mitz/Documents/Development/AnaliseDeDados/Número de alunos matriculados por Unidades da Federação (UF)/Matriculados_"
+                    + String.valueOf(matriculadosParte) + " por UF.csv";
+            String path2 = "/Users/mitz/Documents/Development/AnaliseDeDados/Número de alunos matriculados por Unidades da Federação (UF)/Matriculados_"
+                    + String.valueOf(matriculadosParte) + " por UF_2.csv";
+            String path3 = "/Users/mitz/Documents/Development/AnaliseDeDados/Número de alunos matriculados por Unidades da Federação (UF)/Matriculados_"
+                    + String.valueOf(matriculadosParte) + " por UF_3.csv";
+            String path4 = "/Users/mitz/Documents/Development/AnaliseDeDados/Número de alunos matriculados por Unidades da Federação (UF)/Matriculados_"
+                    + String.valueOf(matriculadosParte) + " por UF_4.csv";
 
             FileInputStream instream = new FileInputStream(path1);
             FileWriter fileWriter = new FileWriter(new File(path2));
@@ -189,7 +234,6 @@ public class Main {
             // completo.
             // Cada posição contém uma entrada como “AC Acre”, onde as primeiras duas
             // letras são a sigla do estado e o restante é o nome completo.
-
             String[] UF_Estado = new String[27];
             UF_Estado[0] = "AC Acre";
             UF_Estado[1] = "AL Alagoas";
@@ -249,6 +293,47 @@ public class Main {
             System.out.println("Registros lidos = " + Lidos3);
             System.out.println("Registros gravados = " + Gravados3);
         }
+        /*
+         * --------------------------------------------------------------------------
+         * Fase 4
+         * Data : 03 de outubro de 2024
+         * Objetivo : Junção dos arquivos Matriculados_1 e Matriculados_2
+         * --------------------------------------------------------------------------
+         */
+
+        // Paths Matriculados_1 e Matriculados_2 e Matriculados_3
+        String path_matriculados1 = "/Users/mitz/Documents/Development/AnaliseDeDados/Número de alunos matriculados por Unidades da Federação (UF)/Matriculados_1 por UF_4.csv";
+        String path_matriculados2 = "/Users/mitz/Documents/Development/AnaliseDeDados/Número de alunos matriculados por Unidades da Federação (UF)/Matriculados_2 por UF_4.csv";
+        String path_matriculados3 = "/Users/mitz/Documents/Development/AnaliseDeDados/Número de alunos matriculados por Unidades da Federação (UF)/Matriculados_3 por UF.csv";
+
+        // Mapa para armazenar a soma de "matriculados" por UF
+        Map<String, Integer> ufMatriculados = new HashMap<>();
+
+        // Função para ler os arquivos e atualizar o mapa
+        lerCsvEAtualizarMapa(path_matriculados1, ufMatriculados);
+        lerCsvEAtualizarMapa(path_matriculados2, ufMatriculados);
+
+        // Escreve o resultado combinado em um novo arquivo CSV
+        FileWriter fileWriter = new FileWriter(path_matriculados3);
+        BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+
+        // Escreve cabeçalho
+        bufferedWriter.write("UF;MATRICULADOS");
+        bufferedWriter.newLine();
+
+        // Escreve os dados acumulados de "matriculados" por UF
+        for (Map.Entry<String, Integer> entry : ufMatriculados.entrySet()) {
+            bufferedWriter.write(entry.getKey() + ";" + entry.getValue());
+            bufferedWriter.newLine();
+        }
+
+        // Fecha o arquivo
+        bufferedWriter.close();
+        fileWriter.close();
+
+        System.out.println("--------- Fase 4 ---------------");
+        System.out.println("Arquivo combinado criado com sucesso: " + path_matriculados3);
+
     }
 
 }
