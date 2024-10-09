@@ -27,9 +27,9 @@ public class Main {
             throws FileNotFoundException, IOException, ClassNotFoundException, SQLException {
 
         String path1 = "/Users/mitz/Documents/Development/AnaliseDeDados/Número de alunos matriculados por Unidades da Federação (UF)/Matriculados_1 por UF.csv";
-        String path2 = "/Users/mitz/Documents/Development/AnaliseDeDados/Número de alunos matriculados por Unidades da Federação (UF)/Matriculados_2 por UF.csv";
-        String path3 = "/Users/mitz/Documents/Development/AnaliseDeDados/Número de alunos matriculados por Unidades da Federação (UF)/Matriculados_3 por UF.csv";
-        String path4 = "/Users/mitz/Documents/Development/AnaliseDeDados/Número de alunos matriculados por Unidades da Federação (UF)/Matriculados_4 por UF.csv";
+        String path2 = "/Users/mitz/Documents/Development/AnaliseDeDados/Número de alunos matriculados por Unidades da Federação (UF)/Matriculados_1 por UF_2.csv";
+        String path3 = "/Users/mitz/Documents/Development/AnaliseDeDados/Número de alunos matriculados por Unidades da Federação (UF)/Matriculados_1 por UF_3.csv";
+        String path4 = "/Users/mitz/Documents/Development/AnaliseDeDados/Número de alunos matriculados por Unidades da Federação (UF)/Matriculados_1 por UF_3.csv";
 
         FileInputStream instream = new FileInputStream(path1);
         FileWriter fileWriter = new FileWriter(new File(path2));
